@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://dqoa4cr4b6byf" path="res://Sprites/characterWalk.png" id="1_4e5bt"]
 [ext_resource type="Texture2D" uid="uid://cqmi4r5sl2rpn" path="res://Sprites/characterFall.png" id="1_gj0cs"]
+[ext_resource type="Texture2D" uid="uid://d1atrpcigyxlu" path="res://Sprites/characterIdle.png" id="1_ltgau"]
 [ext_resource type="Texture2D" uid="uid://6dcsgfgyxngy" path="res://Sprites/characterJump.png" id="2_ck3sb"]
 [ext_resource type="Texture2D" uid="uid://xgdu2rcldydm" path="res://Sprites/characterJumpMaxHeight.png" id="3_cx4ix"]
 
@@ -11,7 +12,7 @@ script/source = "extends CharacterBody2D
 
 const SPEED = 150
 const JUMP_VELOCITY = -300.0
-var idle
+var double_jump_used = false
 
 func _physics_process(delta: float) -> void:
 	# Add the gravity.
@@ -21,7 +22,13 @@ func _physics_process(delta: float) -> void:
 	# Handle jump.
 	if Input.is_action_just_pressed(\"jump\") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
-
+		double_jump_used = false #Declaramos el doble salto como disponible al momento de realizar el primer salto para ahorrarnos chequeo
+	
+	if Input.is_action_just_pressed(\"jump\") and !is_on_floor(): #Si apretamos el salto y NO estamos en el suelo, comprobamos si está disponible el doble salto y si lo está, lo ejecutamos
+		if double_jump_used == false:
+			double_jump_used = true
+			velocity.y = JUMP_VELOCITY
+	
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
 	var direction := Input.get_axis(\"move_left\", \"move_right\")
@@ -40,15 +47,13 @@ func _find_animation():
 			$AnimatedSprite2D.play(\"Walk\")
 		else:
 			$AnimatedSprite2D.play(\"Idle\")
-			
-	else:	#Si no está en el suelo, entonces comprobamos su velocidad vertical
-		
-		if velocity.y < 0:
+	else:	#Si no está en el suelo, entonces comprobamos su velocidad vertical. Comprobamos alrededor de -50 y 50 para darle espacio al frame de altura máxima de salto.
+		if velocity.y < -50:
 			$AnimatedSprite2D.play(\"Jump\")
-		else: if velocity.y > 0:
+		else: if velocity.y > 50:
 			$AnimatedSprite2D.play(\"Fall\")
 			
-		if (velocity.y > -50 and velocity.y < 50): 
+		else: 
 			$AnimatedSprite2D.play(\"MaxHeight\") #Si la velocidad en Y en un rango pequeño alrededor del cero (es decir, cuando alcanza el punto máximo del salto, cambiamos el sprite al de altura máxima)
 	
 		
@@ -110,7 +115,10 @@ animations = [{
 "name": &"Fall",
 "speed": 5.0
 }, {
-"frames": [],
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_ltgau")
+}],
 "loop": false,
 "name": &"Idle",
 "speed": 5.0
@@ -172,4 +180,4 @@ shape = SubResource("RectangleShape2D_ltgau")
 position = Vector2(-0.125, 3.5)
 scale = Vector2(1.4583334, 1.4583334)
 sprite_frames = SubResource("SpriteFrames_38t12")
-animation = &"MaxHeight"
+animation = &"Idle"

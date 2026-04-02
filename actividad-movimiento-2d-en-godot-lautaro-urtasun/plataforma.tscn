@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://bgdbkuxh4k8l7" path="res://icon.svg" id="1_bon5w"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1v4vm"]
-size = Vector2(128, 129)
+size = Vector2(128, 128)
 
 [node name="Plataforma" type="StaticBody2D" unique_id=226555492]
 
@@ -11,5 +11,4 @@ size = Vector2(128, 129)
 texture = ExtResource("1_bon5w")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1271951760]
-position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_1v4vm")
