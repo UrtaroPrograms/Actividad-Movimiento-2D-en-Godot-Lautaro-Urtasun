@@ -13,6 +13,7 @@ script/source = "extends CharacterBody2D
 const SPEED = 150
 const JUMP_VELOCITY = -300.0
 var double_jump_used = false
+var dash_used = false;
 
 func _physics_process(delta: float) -> void:
 	# Add the gravity.
@@ -28,6 +29,9 @@ func _physics_process(delta: float) -> void:
 		if double_jump_used == false:
 			double_jump_used = true
 			velocity.y = JUMP_VELOCITY
+			
+	if Input.is_action_just_pressed(\"dash\") and !dash_used:
+		dash_used = true;
 	
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
@@ -180,4 +184,4 @@ shape = SubResource("RectangleShape2D_ltgau")
 position = Vector2(-0.125, 3.5)
 scale = Vector2(1.4583334, 1.4583334)
 sprite_frames = SubResource("SpriteFrames_38t12")
-animation = &"Idle"
+animation = &"Fall"
