@@ -4,9 +4,10 @@
 [ext_resource type="Texture2D" uid="uid://bvb4ji6cujvik" path="res://Sprites/characterDash.png" id="1_35kqm"]
 [ext_resource type="Texture2D" uid="uid://cqmi4r5sl2rpn" path="res://Sprites/characterFall.png" id="1_gj0cs"]
 [ext_resource type="Texture2D" uid="uid://d1atrpcigyxlu" path="res://Sprites/characterIdle.png" id="1_ltgau"]
-[ext_resource type="Texture2D" uid="uid://dnsq3lk53i2nj" path="res://Sprites/CharacterDashRecovery.png" id="2_1y5k2"]
+[ext_resource type="Texture2D" uid="uid://bu080mygjw1oh" path="res://Sprites/CharacterDashRecovery.png" id="2_1y5k2"]
 [ext_resource type="Texture2D" uid="uid://6dcsgfgyxngy" path="res://Sprites/characterJump.png" id="2_ck3sb"]
 [ext_resource type="Texture2D" uid="uid://xgdu2rcldydm" path="res://Sprites/characterJumpMaxHeight.png" id="3_cx4ix"]
+[ext_resource type="Script" uid="uid://c7dc7oiv2gytn" path="res://state_machine.gd" id="8_1y5k2"]
 
 [sub_resource type="GDScript" id="GDScript_4e5bt"]
 script/source = "extends CharacterBody2D
@@ -92,8 +93,6 @@ func _find_animation():
 	else: if velocity.x > 0:
 		$AnimatedSprite2D.flip_h = false
 		heading = 1
-		
-
 
 func _on_dash_duration_timeout():   #Cuando termina el dash, activamos el timer de cooldown y de recuperación, al mismo tiempo que desactivamos el estado de dash
 	is_dashing = false
@@ -299,6 +298,17 @@ one_shot = true
 [node name="DashRecovery" type="Timer" parent="." unique_id=619275705]
 wait_time = 0.2
 one_shot = true
+
+[node name="StateMachine" type="Node" parent="." unique_id=960146581]
+script = ExtResource("8_1y5k2")
+
+[node name="Walking" type="Node" parent="StateMachine" unique_id=1622602589]
+
+[node name="Dashing" type="Node" parent="StateMachine" unique_id=1942559925]
+
+[node name="Jumping" type="Node" parent="StateMachine" unique_id=1528794073]
+
+[node name="Falling" type="Node" parent="StateMachine" unique_id=651311709]
 
 [connection signal="timeout" from="DashDuration" to="." method="_on_dash_duration_timeout"]
 [connection signal="timeout" from="DashCooldown" to="." method="_on_dash_cooldown_timeout"]
